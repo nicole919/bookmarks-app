@@ -3,6 +3,7 @@ import { Route } from "react-router-dom";
 import AddBookmark from "./AddBookmark/AddBookmark";
 import BookmarkList from "./BookmarkList/BookmarkList";
 import BookmarksContext from "./BookmarksContext";
+import EditBookmark from "./EditBookmark";
 import Nav from "./Nav/Nav";
 import Rating from "./Rating/Rating";
 import config from "./config";
@@ -52,12 +53,21 @@ class App extends Component {
       .then(this.setBookmarks)
       .catch(error => this.setState({ error }));
   }
+  updateBookmark = updatedBookmark => {
+    const newBookmarks = this.state.bookmarks.map(bm =>
+      bm.id === updatedBookmark.id ? bm : updatedBookmark
+    );
+    this.setState({
+      bookmarks: newBookmarks
+    });
+  };
 
   render() {
     const contextValue = {
       bookmarks: this.state.bookmarks,
       addBookmark: this.addBookmark,
-      deleteBookmark: this.deleteBookmark
+      deleteBookmark: this.deleteBookmark,
+      updateBookmark: this.updateBookmark
     };
     return (
       <main className="App">
@@ -67,6 +77,7 @@ class App extends Component {
           <div className="content" aria-live="polite">
             <Route path="/add-bookmark" component={AddBookmark} />
             <Route exact path="/" component={BookmarkList} />
+            <Route path="/edit/:bookmarkId" component={EditBookmark} />
           </div>
         </BookmarksContext.Provider>
         <Rating value="{5}" />
